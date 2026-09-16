@@ -5,11 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Scaffold
@@ -60,6 +64,21 @@ fun GreetingPreview() {
 
 @Preview(showBackground = true)
 @Composable
+fun GridPreview() {
+    LazyVerticalGrid(
+        modifier = Modifier.background(androidx.compose.ui.graphics.Color(Color.BLUE)),
+        columns = GridCells.Fixed(3),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        items(9) {
+            TicTacToeCell(if (it % 2 == 0) CellValue.O else CellValue.X)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
 fun CellPreview() {
     TicTacToeCell(CellValue.O)
 }
@@ -78,15 +97,10 @@ fun TicTacToeCell(cellValue: CellValue) {
         CellValue.Empty -> ""
     }
 
-    val missingTopRect = GenericShape { size, _ ->
-        addRect(Rect(0f, -100f, size.width, size.height))
-    }
-
-
     Box(
         modifier = Modifier
             .size(100.dp)
-            .border(width = 2.dp, color = androidx.compose.ui.graphics.Color(Color.BLUE), shape = missingTopRect),
+            .background(androidx.compose.ui.graphics.Color(Color.WHITE)),
         Alignment.Center
     ) {
         // Your content here
