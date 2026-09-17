@@ -1,12 +1,10 @@
 package com.aniketkadam.tictactoe
 
-import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,7 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aniketkadam.tictactoe.ui.theme.TicTacToeTheme
@@ -63,19 +60,19 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun GridPreview() {
     val initialList =
         persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.O) } }
-    val data : PersistentList<CellValue> by remember { mutableStateOf(initialList) }
+    val data: PersistentList<CellValue> by remember { mutableStateOf(initialList) }
     TicTacToeGrid(data)
 }
 
 @Composable
-fun TicTacToeGrid(gridData : PersistentList<CellValue>) {
+fun TicTacToeGrid(gridData: PersistentList<CellValue>) {
     LazyVerticalGrid(
         modifier = Modifier.background(Color.Blue),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(gridData) {cell ->
+        items(gridData) { cell ->
             TicTacToeCell(cell)
         }
     }
