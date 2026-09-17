@@ -109,7 +109,7 @@ fun TicTacToeGrid(gridData: PersistentList<CellValue>, onTap: (Int) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier
             .size(600.dp)
-            .background(Color.Blue),
+            .background(Color.White),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
@@ -150,7 +150,7 @@ fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
         modifier = Modifier
             .size(200.dp)
             .clickable { onTap() }
-            .background(Color.White),
+            .background(Color.DarkGray),
         Alignment.Center
     ) {
         // Your content here
@@ -159,6 +159,6 @@ fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
                 getTextValueForCell(cellValue)
             )
         }
-        Text(cellTextValue, autoSize = TextAutoSize.StepBased())
+        Text(cellTextValue, autoSize = TextAutoSize.StepBased(), color = Color.White)
     }
 }
