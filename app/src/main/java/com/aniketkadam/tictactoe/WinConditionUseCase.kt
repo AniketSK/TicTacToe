@@ -6,7 +6,7 @@ import kotlin.collections.map
 sealed class WinState {
     data object InProgress : WinState()
     data class Won(val winner : CurrentPlayer,
-        val winIndices : List<Int>) : WinState()
+        val winIndices : Set<Int>) : WinState()
     data object Draw : WinState()
 }
 
@@ -42,7 +42,7 @@ class WinConditionUseCase {
 
         return when(answer) {
             null -> if(gridState.none { it == CellValue.Empty }) WinState.Draw else WinState.InProgress
-            else -> WinState.Won(moveCharacter.toPlayer()!!, answer.toList())
+            else -> WinState.Won(moveCharacter.toPlayer()!!, answer)
         }
     }
 }
