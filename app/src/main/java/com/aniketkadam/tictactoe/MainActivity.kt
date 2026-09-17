@@ -1,6 +1,6 @@
 package com.aniketkadam.tictactoe
 
-import android.graphics.Color
+import androidx.compose.ui.graphics.Color
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Scaffold
@@ -28,6 +29,9 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.aniketkadam.tictactoe.ui.theme.TicTacToeTheme
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.persistentListOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,23 +60,23 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    TicTacToeTheme {
-        Greeting("Android")
-    }
+fun GridPreview() {
+    val initialList =
+        persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.O) } }
+    val data : PersistentList<CellValue> by remember { mutableStateOf(initialList) }
+    TicTacToeGrid(data)
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GridPreview() {
+fun TicTacToeGrid(gridData : PersistentList<CellValue>) {
     LazyVerticalGrid(
-        modifier = Modifier.background(androidx.compose.ui.graphics.Color(Color.BLUE)),
+        modifier = Modifier.background(Color.Blue),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(9) {
-            TicTacToeCell(if (it % 2 == 0) CellValue.O else CellValue.X)
+        items(gridData) {cell ->
+            TicTacToeCell(cell)
         }
     }
 }
@@ -100,7 +104,7 @@ fun TicTacToeCell(cellValue: CellValue) {
     Box(
         modifier = Modifier
             .size(100.dp)
-            .background(androidx.compose.ui.graphics.Color(Color.WHITE)),
+            .background(Color.White),
         Alignment.Center
     ) {
         // Your content here
