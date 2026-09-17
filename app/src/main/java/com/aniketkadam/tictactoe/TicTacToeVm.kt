@@ -21,7 +21,8 @@ enum class CurrentPlayer {
 data class UiState(
     val currentPlayer: CurrentPlayer,
     val gridState: PersistentList<CellValue>,
-    val winState: WinState
+    val winState: WinState,
+    val showResetButton : Boolean
 )
 
 class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUseCase()) :
@@ -40,6 +41,10 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
 
             // Add the move to the grid
             val updatedGrid = state.gridState.mutate {
+                // If the cell is already set, it can't be changed.
+                if(it[cellIndex] != CellValue.Empty)
+                    return
+
                 it[cellIndex] = state.currentPlayer.toCellType()
             }
 
@@ -49,11 +54,14 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
             // Check if the game is won/draw/inprogress
             val updatedGameState = winConditionUseCase.checkWinCondition(updatedGrid, cellIndex)
 
+            // If there's a move then the reset button should be shown.
+            val showResetButton = true
 
             // Set the updated state
             state.copy(gridState = updatedGrid,
                 winState = updatedGameState,
-                currentPlayer = curPlayer)
+                currentPlayer = curPlayer,
+                showResetButton = showResetButton)
         }
     }
 
@@ -62,7 +70,7 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
     }
 
     private fun getDefaultGameState() =
-        UiState(CurrentPlayer.X, getInitialGridState(), WinState.InProgress)
+        UiState(CurrentPlayer.X, getInitialGridState(), WinState.InProgress, false)
 
     private fun getInitialGridState() =
         persistentListOf<CellValue>().defaultGrid(CellValue.Empty)

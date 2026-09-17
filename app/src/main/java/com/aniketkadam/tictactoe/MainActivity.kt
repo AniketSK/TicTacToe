@@ -62,7 +62,8 @@ fun GameUiPreview() {
         UiState(
             CurrentPlayer.X,
             persistentListOf<CellValue>().defaultGrid(CellValue.O),
-            WinState.InProgress
+            WinState.InProgress,
+            false
         ), {}, {})
 }
 
@@ -90,7 +91,7 @@ fun GameUi(
 
         Text(text,
             style = MaterialTheme.typography.headlineMedium )
-        if (uiState.winState != WinState.InProgress) {
+        if (uiState.showResetButton) {
             Button(resetGame) { Text("Reset Game") }
         }
 
