@@ -28,6 +28,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.LightGray
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aniketkadam.tictactoe.ui.theme.TicTacToeTheme
 import kotlinx.collections.immutable.PersistentList
-import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentListOf
 
 class MainActivity : ComponentActivity() {
@@ -77,7 +77,8 @@ fun GameUi(
     Column(
         Modifier
             .fillMaxSize()
-            .padding(innerPadding).background(LightGray),
+            .padding(innerPadding)
+            .background(LightGray),
         verticalArrangement = Arrangement.SpaceAround,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -89,11 +90,16 @@ fun GameUi(
             }
         }
 
-        Text(text,
-            style = MaterialTheme.typography.headlineMedium )
-        if (uiState.showResetButton) {
-            Button(resetGame) { Text("Reset Game") }
-        }
+        Text(
+            text,
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        // Show/hide but occupy space so it doesn't jump the UI.
+        Button(
+            resetGame,
+            modifier = Modifier.alpha(if (uiState.showResetButton) 1f else 0f)
+        ) { Text("Reset Game") }
 
         TicTacToeGrid(uiState.gridState, onPlayerMove)
     }
@@ -142,9 +148,9 @@ enum class CellValue {
     }
 
     fun toBoardRepresentation() = when (this) {
-        CellValue.X -> "X"
-        CellValue.O -> "O"
-        CellValue.Empty -> ""
+        X -> "X"
+        O -> "O"
+        Empty -> ""
     }
 }
 
