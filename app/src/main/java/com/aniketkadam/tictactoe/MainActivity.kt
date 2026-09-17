@@ -139,15 +139,17 @@ enum class CellValue {
         O -> CurrentPlayer.O
         Empty -> null
     }
-}
 
-@Composable
-fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
-    fun getTextValueForCell(cellValue: CellValue): String = when (cellValue) {
+    fun toBoardRepresentation() = when (this) {
         CellValue.X -> "X"
         CellValue.O -> "O"
         CellValue.Empty -> ""
     }
+}
+
+@Composable
+fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
+    val cellTextValue = remember(cellValue) { cellValue.toBoardRepresentation() }
 
     Box(
         modifier = Modifier
@@ -157,11 +159,6 @@ fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
         Alignment.Center
     ) {
         // Your content here
-        val cellTextValue by remember(cellValue) {
-            mutableStateOf(
-                getTextValueForCell(cellValue)
-            )
-        }
         Text(cellTextValue, autoSize = TextAutoSize.StepBased(), color = Color.White)
     }
 }

@@ -49,6 +49,7 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
             // Check if the game is won/draw/inprogress
             val updatedGameState = winConditionUseCase.checkWinCondition(updatedGrid, cellIndex)
 
+
             // Set the updated state
             state.copy(gridState = updatedGrid,
                 winState = updatedGameState,
