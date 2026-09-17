@@ -34,6 +34,8 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
     // When the player moves, the grid is mutated to update the cell with a move for the current player.
     fun playerMove(cellIndex: Int) {
         _uiState.update { state ->
+            if(state.winState != WinState.InProgress)
+                return
             // Add the move to the grid
             val updatedGrid = state.gridState.mutate {
                 it[cellIndex] = state.currentPlayer.toCellType()
@@ -43,7 +45,7 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
             val updatedGameState = winConditionUseCase.checkWinCondition(updatedGrid, cellIndex)
 
             // Set the updated state
-            state.copy(gridState = updatedGrid, winState = updatedGameState)
+            state.copy(gridState = updatedGrid, winState = updatedGameState, currentPlayer = if(state.currentPlayer == CurrentPlayer.X) CurrentPlayer.O else CurrentPlayer.X)
         }
     }
 
@@ -55,5 +57,5 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
         UiState(CurrentPlayer.X, getInitialGridState(), WinState.InProgress)
 
     private fun getInitialGridState() =
-        persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.O) } }
+        persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.Empty) } }
 }

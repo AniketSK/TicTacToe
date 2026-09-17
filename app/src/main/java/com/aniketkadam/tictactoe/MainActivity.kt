@@ -4,16 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aniketkadam.tictactoe.ui.theme.TicTacToeTheme
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.mutate
@@ -37,13 +43,59 @@ class MainActivity : ComponentActivity() {
         setContent {
             TicTacToeTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                    val vm by viewModels<TicTacToeVm>()
+                    val uiState by vm.uiState.collectAsStateWithLifecycle()
+                    GameUi(innerPadding, uiState, vm::playerMove, vm::resetGame)
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GameUiPreview() {
+    GameUi(
+        PaddingValues(0.dp),
+        UiState(
+            CurrentPlayer.X,
+            persistentListOf<CellValue>().mutate { mutableList ->
+                repeat(9) {
+                    mutableList.add(CellValue.O)
+                }
+            },
+            WinState.InProgress
+        ), {}, {})
+}
+
+@Composable
+fun GameUi(
+    innerPadding: PaddingValues,
+    uiState: UiState,
+    onPlayerMove: (Int) -> Unit,
+    resetGame: () -> Unit
+) {
+    Column(
+        Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val text = remember(uiState.winState, uiState.currentPlayer) {
+            when (uiState.winState) {
+                WinState.Draw -> "Draw!"
+                WinState.InProgress -> "Current Player: ${uiState.currentPlayer}"
+                is WinState.Won -> "${uiState.winState.winner} wins!"
+            }
+        }
+
+        Text(text)
+        if (uiState.winState != WinState.InProgress) {
+            Button(resetGame) { Text("Reset Game") }
+        }
+
+        TicTacToeGrid(uiState.gridState, Modifier.size(600.dp), onPlayerMove)
     }
 }
 
@@ -58,20 +110,28 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GridPreview() {
-    val data: PersistentList<CellValue> by remember { mutableStateOf(persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.O) } }) }
-    TicTacToeGrid(data)
+    val data: PersistentList<CellValue> by remember {
+        mutableStateOf(persistentListOf<CellValue>().mutate { mutableList ->
+            repeat(
+                9
+            ) { mutableList.add(CellValue.O) }
+        })
+    }
+    TicTacToeGrid(data, Modifier.size(300.dp), {})
 }
 
 @Composable
-fun TicTacToeGrid(gridData: PersistentList<CellValue>) {
+fun TicTacToeGrid(gridData: PersistentList<CellValue>, modifier: Modifier, onTap: (Int) -> Unit) {
     LazyVerticalGrid(
-        modifier = Modifier.background(Color.Blue),
+        modifier = Modifier
+            .size(600.dp)
+            .background(Color.Blue),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        items(gridData) { cell ->
-            TicTacToeCell(cell)
+        itemsIndexed(gridData) { idx, cell ->
+            TicTacToeCell(cell, { onTap(idx) })
         }
     }
 }
@@ -79,7 +139,7 @@ fun TicTacToeGrid(gridData: PersistentList<CellValue>) {
 @Preview(showBackground = true)
 @Composable
 fun CellPreview() {
-    TicTacToeCell(CellValue.O)
+    TicTacToeCell(CellValue.O, {})
 }
 
 enum class CellValue {
@@ -87,15 +147,15 @@ enum class CellValue {
     O,
     Empty;
 
-    fun toPlayer() = when(this) {
-        CellValue.X -> CurrentPlayer.X
-        CellValue.O -> CurrentPlayer.O
-        CellValue.Empty -> null
+    fun toPlayer() = when (this) {
+        X -> CurrentPlayer.X
+        O -> CurrentPlayer.O
+        Empty -> null
     }
 }
 
 @Composable
-fun TicTacToeCell(cellValue: CellValue) {
+fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
     fun getTextValueForCell(cellValue: CellValue): String = when (cellValue) {
         CellValue.X -> "X"
         CellValue.O -> "O"
@@ -104,7 +164,8 @@ fun TicTacToeCell(cellValue: CellValue) {
 
     Box(
         modifier = Modifier
-            .size(100.dp)
+            .size(200.dp)
+            .clickable { onTap() }
             .background(Color.White),
         Alignment.Center
     ) {
