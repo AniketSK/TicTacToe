@@ -24,7 +24,8 @@ data class UiState(
     val winState: WinState
 )
 
-class TicTacToeVm : ViewModel() {
+class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUseCase()) :
+    ViewModel() {
     private val _uiState: MutableStateFlow<UiState> =
         MutableStateFlow(getDefaultGameState())
 
@@ -39,7 +40,7 @@ class TicTacToeVm : ViewModel() {
             }
 
             // Check if the game is won/draw/inprogress
-            val updatedGameState = WinConditionUseCase().checkWinCondition(updatedGrid, cellIndex)
+            val updatedGameState = winConditionUseCase.checkWinCondition(updatedGrid, cellIndex)
 
             // Set the updated state
             state.copy(gridState = updatedGrid, winState = updatedGameState)
