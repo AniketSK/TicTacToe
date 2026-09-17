@@ -95,7 +95,7 @@ fun GameUi(
             Button(resetGame) { Text("Reset Game") }
         }
 
-        TicTacToeGrid(uiState.gridState, Modifier.size(600.dp), onPlayerMove)
+        TicTacToeGrid(uiState.gridState, onPlayerMove)
     }
 }
 
@@ -117,11 +117,11 @@ fun GridPreview() {
             ) { mutableList.add(CellValue.O) }
         })
     }
-    TicTacToeGrid(data, Modifier.size(300.dp), {})
+    TicTacToeGrid(data, {})
 }
 
 @Composable
-fun TicTacToeGrid(gridData: PersistentList<CellValue>, modifier: Modifier, onTap: (Int) -> Unit) {
+fun TicTacToeGrid(gridData: PersistentList<CellValue>, onTap: (Int) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier
             .size(600.dp)
