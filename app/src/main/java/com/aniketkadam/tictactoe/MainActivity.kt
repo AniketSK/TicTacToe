@@ -59,11 +59,7 @@ fun GameUiPreview() {
         PaddingValues(0.dp),
         UiState(
             CurrentPlayer.X,
-            persistentListOf<CellValue>().mutate { mutableList ->
-                repeat(9) {
-                    mutableList.add(CellValue.O)
-                }
-            },
+            persistentListOf<CellValue>().defaultGrid(CellValue.O),
             WinState.InProgress
         ), {}, {})
 }
@@ -103,11 +99,7 @@ fun GameUi(
 @Composable
 fun GridPreview() {
     val data: PersistentList<CellValue> by remember {
-        mutableStateOf(persistentListOf<CellValue>().mutate { mutableList ->
-            repeat(
-                9
-            ) { mutableList.add(CellValue.O) }
-        })
+        mutableStateOf(persistentListOf<CellValue>().defaultGrid(CellValue.O))
     }
     TicTacToeGrid(data, {})
 }

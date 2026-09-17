@@ -64,5 +64,5 @@ class TicTacToeVm(val winConditionUseCase: WinConditionUseCase = WinConditionUse
         UiState(CurrentPlayer.X, getInitialGridState(), WinState.InProgress)
 
     private fun getInitialGridState() =
-        persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.Empty) } }
+        persistentListOf<CellValue>().defaultGrid(CellValue.Empty)
 }
