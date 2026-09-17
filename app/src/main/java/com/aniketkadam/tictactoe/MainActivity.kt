@@ -58,9 +58,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GridPreview() {
-    val initialList =
-        persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.O) } }
-    val data: PersistentList<CellValue> by remember { mutableStateOf(initialList) }
+    val data: PersistentList<CellValue> by remember { mutableStateOf(persistentListOf<CellValue>().mutate { mutableList -> repeat(9) { mutableList.add(CellValue.O) } }) }
     TicTacToeGrid(data)
 }
 
@@ -87,7 +85,13 @@ fun CellPreview() {
 enum class CellValue {
     X,
     O,
-    Empty
+    Empty;
+
+    fun toPlayer() = when(this) {
+        CellValue.X -> CurrentPlayer.X
+        CellValue.O -> CurrentPlayer.O
+        CellValue.Empty -> null
+    }
 }
 
 @Composable
