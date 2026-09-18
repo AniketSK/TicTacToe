@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -156,12 +157,12 @@ enum class CellValue {
 }
 
 @Composable
-fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit) {
+fun TicTacToeCell(cellValue: CellValue, onTap: () -> Unit, modifier: Modifier = Modifier) {
     val cellTextValue = remember(cellValue) { cellValue.toBoardRepresentation() }
 
     Box(
-        modifier = Modifier
-            .size(200.dp)
+        modifier = modifier
+            .aspectRatio(1f)
             .clickable { onTap() }
             .background(Color.DarkGray),
         Alignment.Center
