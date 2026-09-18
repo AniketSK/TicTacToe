@@ -17,7 +17,7 @@ The two methods it exposes are:
 * `playerMove` which is called when a player taps a box to mark it.
 * `resetGame` which clears state and returns the game to default. It may be called any time after a single move is mode.
 
-When `playerMove` is called, it makes necessary changes to UiState such as who the current player is, if there's a win,
+When `playerMove` is called, it makes necessary changes to [UiState] such as who the current player is, if there's a win,
 draw etc.
 
 [WinConditionUseCase] contains the use case that calculates if the board has reached a win/draw condition or is still in-progress.
