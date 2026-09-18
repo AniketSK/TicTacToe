@@ -120,7 +120,7 @@ fun TicTacToeGrid(gridData: PersistentList<CellValue>, onTap: (Int) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier
             .padding(16.dp)
-            .size(600.dp)
+            .aspectRatio(1f)
             .background(Color.White),
         columns = GridCells.Fixed(3),
         verticalArrangement = Arrangement.spacedBy(2.dp),
