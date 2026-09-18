@@ -118,6 +118,7 @@ fun GridPreview() {
 fun TicTacToeGrid(gridData: PersistentList<CellValue>, onTap: (Int) -> Unit) {
     LazyVerticalGrid(
         modifier = Modifier
+            .padding(16.dp)
             .size(600.dp)
             .background(Color.White),
         columns = GridCells.Fixed(3),
